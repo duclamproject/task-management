@@ -27,10 +27,9 @@ module.exports.index = async (req, res) => {
   const sort = {};
   if (req.query.sortKey && req.query.sortValue) {
     sort[req.query.sortKey] = req.query.sortValue;
-  } else {
-    sort.title = "desc";
   }
   // End Sort
+
   const tasks = await Task.find(find).sort(sort);
   res.json(tasks);
 };
