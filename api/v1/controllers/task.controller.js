@@ -1,5 +1,5 @@
 const Task = require("../models/task.model");
-
+const paginationHelper = require("../../../helpers/pagination");
 // [Get] /api/v1/task/
 module.exports.index = async (req, res) => {
   const find = {
@@ -11,16 +11,17 @@ module.exports.index = async (req, res) => {
 
   // Pagination
   // Công thức phân trang (Skip)= (CurrentPage - 1) * LimtIems;
-  //   let initPagination = {
-  //     currentPage: 1,
-  //     limitItems: 4,
-  //   };
-  //   const countTasks = await Task.countDocuments(find);
-  //   const objectPagination = paginationHelper(
-  //     initPagination,
-  //     req.query,
-  //     countTasks
-  //   );
+  let initPagination = {
+    currentPage: 1,
+    limitItems: 2,
+  };
+
+  const countTasks = await Task.countDocuments(find);
+  const objectPagination = paginationHelper(
+    initPagination,
+    req.query,
+    countTasks
+  );
   // End Pagination
 
   // Sort
@@ -30,7 +31,10 @@ module.exports.index = async (req, res) => {
   }
   // End Sort
 
-  const tasks = await Task.find(find).sort(sort);
+  const tasks = await Task.find(find)
+    .sort(sort)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip);
   res.json(tasks);
 };
 
