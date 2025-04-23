@@ -102,7 +102,20 @@ module.exports.changeMulti = async (req, res) => {
           message: "Cập nhật trạng thái thành công!",
         });
         break;
-
+      case "delete":
+        await Task.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            deleted: value,
+          }
+        );
+        res.json({
+          code: 200,
+          message: "Cập nhật trạng thái thành công!",
+        });
+        break;
       default:
         res.json({
           code: 400,
@@ -114,6 +127,27 @@ module.exports.changeMulti = async (req, res) => {
     res.json({
       code: 400,
       message: "Không tồn tại!",
+    });
+  }
+};
+
+// [GET] /api/v1/task/create
+module.exports.create = async (req, res) => {
+  try {
+    const task = new Task(req.body);
+    console.log(task);
+
+    const data = await task.save();
+
+    res.json({
+      code: 200,
+      message: "Tạo mới công việc thành công!",
+      data: data,
+    });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Lỗi!",
     });
   }
 };
