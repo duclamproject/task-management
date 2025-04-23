@@ -58,6 +58,7 @@ module.exports.detail = async (req, res) => {
   }
 };
 
+// [GET] /api/v1/task/change-status/:id
 module.exports.changeStatus = async (req, res) => {
   try {
     const id = req.params.id;
@@ -73,6 +74,42 @@ module.exports.changeStatus = async (req, res) => {
       code: 200,
       message: "Cập nhật trạng thái thành công!",
     });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Không tồn tại!",
+    });
+  }
+};
+
+// [GET] /api/v1/task/change-multi
+module.exports.changeMulti = async (req, res) => {
+  try {
+    const { ids, keyword, value } = req.body; // Detructuring
+
+    switch (keyword) {
+      case "status":
+        await Task.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            status: value,
+          }
+        );
+        res.json({
+          code: 200,
+          message: "Cập nhật trạng thái thành công!",
+        });
+        break;
+
+      default:
+        res.json({
+          code: 400,
+          message: "Không tồn tại!",
+        });
+        break;
+    }
   } catch (error) {
     res.json({
       code: 400,
