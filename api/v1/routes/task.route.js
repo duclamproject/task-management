@@ -14,4 +14,6 @@ router.post("/create", controller.create);
 
 router.patch("/delete/:id", controller.delete);
 
+router.patch("/edit/:id", controller.edit);
+
 module.exports = router;
