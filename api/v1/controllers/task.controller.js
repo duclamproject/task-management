@@ -151,3 +151,27 @@ module.exports.create = async (req, res) => {
     });
   }
 };
+
+// [GET] /api/v1/task/delete/:id
+module.exports.delete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Task.updateOne(
+      {
+        _id: id,
+      },
+      {
+        deleted: true,
+      }
+    );
+    res.json({
+      code: 200,
+      message: "Xóa công việc thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Lỗi!",
+    });
+  }
+};
