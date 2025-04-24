@@ -108,12 +108,13 @@ module.exports.changeMulti = async (req, res) => {
             _id: { $in: ids },
           },
           {
-            deleted: value,
+            deleted: true,
+            deletedAt: new Date(),
           }
         );
         res.json({
           code: 200,
-          message: "Cập nhật trạng thái thành công!",
+          message: "Xóa thành công!",
         });
         break;
       default:
@@ -156,12 +157,14 @@ module.exports.create = async (req, res) => {
 module.exports.delete = async (req, res) => {
   try {
     const id = req.params.id;
+
     await Task.updateOne(
       {
         _id: id,
       },
       {
         deleted: true,
+        deletedAt: new Date(),
       }
     );
     res.json({
