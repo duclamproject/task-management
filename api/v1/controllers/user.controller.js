@@ -105,3 +105,33 @@ module.exports.forgotPassword = async (req, res) => {
     message: "Đã gửi mã OTP qua email!",
   });
 };
+
+// [POST] /user/password/forgot
+module.exports.otpPassword = async (req, res) => {
+  const email = req.body.email;
+  const otp = req.body.otp;
+
+  const record = await ForgotPassword.findOne({
+    email: email,
+    otp: otp,
+  });
+  if (!record) {
+    res.json({
+      code: 400,
+      message: "OTP không chính xác!",
+    });
+    return;
+  }
+
+  const user = await User.findOne({
+    email: email,
+  });
+  const token = user.token;
+  res.cookie("token", token);
+
+  res.json({
+    code: 200,
+    message: "Xác thực thành công!",
+    token: token,
+  });
+};
