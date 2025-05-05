@@ -135,3 +135,27 @@ module.exports.otpPassword = async (req, res) => {
     token: token,
   });
 };
+
+// [POST] /user/password/reset
+module.exports.resetPassword = async (req, res) => {
+  const token = req.cookies.token;
+  const password = req.body.password;
+
+  const user = await User.findOne({
+    token: token,
+  });
+
+  if (md5(password) === user.password) {
+    res.json({
+      code: 400,
+      message: "Vui lòng đặt lại mật khẩu khác với mật khẩu cũ!",
+    });
+    return;
+  }
+
+  await User.updateOne({ token: token }, { password: md5(password) });
+  res.json({
+    code: 200,
+    message: "Đặt lại mật khẩu thành công!",
+  });
+};
